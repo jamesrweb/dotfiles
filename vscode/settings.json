@@ -1,0 +1,6 @@
+{
+    "extensions.ignoreRecommendations": true,
+    "terminal.integrated.fontFamily": "Fira Code",
+    "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true
+}
