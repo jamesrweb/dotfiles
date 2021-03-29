@@ -61,6 +61,10 @@ function setup_mac() {
 	# Install vs-code extensions
 	code --install-extension bar9.stories
 	code --install-extension benawad.VSinder
+	code --install-extension elmtooling.elm-ls-vscode
+	code --install-extension bmewburn.vscode-intelephense-client
+	code --install-extension ronvanderheijden.phpdoc-generator
+	code --install-extension janisdd.vscode-edit-csv
 
 	# Configure git
 	git config --global commit.gpgsign true
