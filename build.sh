@@ -71,6 +71,7 @@ function setup_mac() {
 	git config --global push.default current
 	git config --global fetch.prune true
 	git config --global rebase.autosquash true
+	git config --global core.ignorecase false
 	git config --global core.editor 'code --wait'
 	git config --global diff.tool 'code'
 	git config --global difftool.code.cmd 'code --wait --diff $LOCAL $REMOTE'
