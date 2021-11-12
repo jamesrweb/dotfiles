@@ -37,34 +37,21 @@ function setup_mac() {
 	brew_install font-fira-code cask
 	brew_install iterm2 cask
 	brew_install visual-studio-code cask
-	brew_install virtualbox cask
+	brew_install docker cask
 
 	# Non-cask installs
 	brew_install git formula
 	brew_install zsh formula
 	brew_install gpg formula
-	brew_install docker formula
-	brew_install docker-machine formula
-	brew_install docker-compose formula
 	brew_install shellcheck formula
-
-	# Setup docker-machine
-	if ! docker-machine ls -q | grep -q '^default$'; then
-		docker-machine create --driver virtualbox default
-	fi
-
-	eval "$(docker-machine env default)"
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/Library/Application Support/Code/User"
 
 	# Install vs-code extensions
-	code --install-extension bar9.stories
-	code --install-extension benawad.VSinder
 	code --install-extension elmtooling.elm-ls-vscode
 	code --install-extension bmewburn.vscode-intelephense-client
 	code --install-extension ronvanderheijden.phpdoc-generator
-	code --install-extension janisdd.vscode-edit-csv
 
 	# Configure git
 	git config --global commit.gpgsign true
