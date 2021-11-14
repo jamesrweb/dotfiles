@@ -223,14 +223,13 @@ function setup_windows() {
 	choco_install gnupg
 	choco_install shellcheck
 	choco_install ntop.portable # htop for windows
-	choco_install elm-platform 
+	choco_install elm-platform
 	choco_install nodejs
 	choco_install python3
 	choco_install php
 	choco_install composer
 	choco_install steam
 	choco_install vscode
-	
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"
