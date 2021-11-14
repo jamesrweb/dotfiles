@@ -1,7 +1,11 @@
 {
     "workbench.colorTheme": "Tomorrow Night Blue",
-    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
-    "extensions.ignoreRecommendations": true,
+    "terminal.integrated.profiles.windows": {
+        "Windows Terminal": {
+            "path": "wt.exe"
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Windows Terminal",
     "explorer.confirmDelete": false,
     "files.associations": {
         "*.phtml": "php",
@@ -11,5 +15,7 @@
     "extensions.ignoreRecommendations": true,
     "terminal.integrated.fontFamily": "Fira Code",
     "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
-    "editor.fontLigatures": true
+    "editor.fontLigatures": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always"
 }
