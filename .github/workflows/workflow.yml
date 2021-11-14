@@ -17,7 +17,7 @@ jobs:
         uses: luizm/action-sh-checker@v0.1.12
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHELLCHECK_OPTS: -e SC2016,SC1090
+          SHELLCHECK_OPTS: -e SC1090 -c auto
           SHFMT_OPTS: -s -w
         with:
           sh_checker_comment: true
