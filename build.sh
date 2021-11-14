@@ -160,13 +160,20 @@ function setup_mac() {
 
 	brew_install_cask font-fira-code
 	brew_install_cask iterm2
-	brew_install_cask visual-studio-code
+	brew_install_cask vscode
 	brew_install_cask docker
 
 	brew_install_formula git
 	brew_install_formula zsh
 	brew_install_formula gpg
 	brew_install_formula shellcheck
+	brew_install_formula elm
+	brew_install_formula nodejs
+	brew_install_formula python3
+	brew_install_formula php
+	brew_install_formula composer
+	brew_install_formula steam
+	brew_install_formula vscode
 
 	# Configure installed applications
 	install_vs_code_extensions
@@ -216,6 +223,14 @@ function setup_windows() {
 	choco_install gnupg
 	choco_install shellcheck
 	choco_install ntop.portable # htop for windows
+	choco_install elm-platform 
+	choco_install nodejs
+	choco_install python3
+	choco_install php
+	choco_install composer
+	choco_install steam
+	choco_install vscode
+	
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"
