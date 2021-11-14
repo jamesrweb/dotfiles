@@ -3,57 +3,42 @@
 cd "$(dirname "$0")" || exit 1
 
 EMAIL="47126579+jamesrweb@users.noreply.github.com"
+SSH_FILE_LOCATION="$HOME/.ssh/id_ed25519"
+
+case "$OSTYPE" in
+	solaris*) echo "SOLARIS" ;;
+	darwin*) setup_mac ;;
+	linux*) echo "LINUX" ;;
+	bsd*) echo "BSD" ;;
+	msys*) setup_windows ;;
+	*) echo "Unknown OS: $OSTYPE" ;;
+esac
 
 function command_exists() {
 	if command -v "$1" >/dev/null; then
 		return 0
-	else
-		return 1
 	fi
+
+	return 1
 }
 
-function brew_install() {
-	case "$2" in
-	cask) brew list --cask "$1" &>/dev/null || brew install --cask "$1" ;;
-	formula) brew list "$1" &>/dev/null || brew install "$1" ;;
-	*) echo "Unknown install method: $2" ;;
-	esac
+function file_exists() {
+	if test -f "$1"; then
+		return 0
+	fi
+	
+	return 1
 }
 
-function setup_mac() {
-	if ! xcode-select -p 1>/dev/null; then
-		xcode-select --install
+function directory_exists() {
+	if test -d "$1"; then
+		return 0
 	fi
+	
+	return 1
+}
 
-	if ! command_exists brew; then
-		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-	fi
-
-	# Install everything needed via brew
-	brew update
-
-	# Cask installs
-	brew tap homebrew/cask-fonts
-	brew_install font-fira-code cask
-	brew_install iterm2 cask
-	brew_install visual-studio-code cask
-	brew_install docker cask
-
-	# Non-cask installs
-	brew_install git formula
-	brew_install zsh formula
-	brew_install gpg formula
-	brew_install shellcheck formula
-
-	# Move vs-code settings
-	cp -r ./vscode/. "$HOME/Library/Application Support/Code/User"
-
-	# Install vs-code extensions
-	code --install-extension elmtooling.elm-ls-vscode
-	code --install-extension bmewburn.vscode-intelephense-client
-	code --install-extension ronvanderheijden.phpdoc-generator
-
-	# Configure git
+function configure_git() {
 	git config --global commit.gpgsign true
 	git config --global init.defaultBranch master
 	git config --global user.name "James Robb"
@@ -65,68 +50,195 @@ function setup_mac() {
 	git config --global core.ignorecase false
 	git config --global core.editor 'code --wait'
 	git config --global diff.tool 'code'
-	git config --global difftool.code.cmd 'code --wait --diff $LOCAL $REMOTE'
+	git config --global difftool.code.cmd "code --wait --diff $LOCAL $REMOTE"
 	git config --global alias.history 'log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
+}
 
-	# Setup zsh
+function install_vs_code_extensions() {
+	code --install-extension elmtooling.elm-ls-vscode
+	code --install-extension bmewburn.vscode-intelephense-client
+	code --install-extension ronvanderheijden.phpdoc-generator
+}
+
+function generate_ssh_keys() {
+	if ! file_exists "$HOME/.ssh/id_ed25519.pub"; then
+		ssh-keygen -t ed25519 -C "$EMAIL"
+	fi
+}
+
+function apply_global_ssh_configuration() {
+	cp ./ssh/config "$HOME/.ssh/config"
+}
+
+function final_manual_steps_information() {
+	echo "Run: 'gpg --list-secret-keys --keyid-format LONG' to get the signature id."
+	echo "Run: 'gpg --armor --export {id}' and add to github."
+	echo "Run: 'git config --global user.signingkey {id}' to auto-sign commits."
+	echo "Run: 'pbcopy < $HOME/.ssh/id_ed25519.pub' to copy the ssh config to the clipboard and then add it to github."
+	echo "Run: 'ssh -T git@github.com' to verify the ssh connection runs properly."
+}
+
+function generate_gpg_key() {
+	if [[ "$(gpg --list-secret-keys --keyid-format LONG)" != *"sec"* ]]; then
+		gpg --full-generate-key
+	fi
+}
+
+function configure_zsh_permissions() {
 	if command_exists compaudit; then
 		compaudit | xargs chmod g-w
 	else
 		chmod 755 /usr/local/share/zsh
 		chmod 755 /usr/local/share/zsh/site-functions
 	fi
+}
 
-	cp ./zsh/.zshrc "$HOME/.zshrc"
-
-	# Setup oh-my-zsh
-	if ! [ -d "$HOME/.oh-my-zsh" ]; then
+function setup_oh_my_zsh() {
+	if ! directory_exists "$HOME/.oh-my-zsh"; then
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 	fi
+}
 
-	if ! [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel9k" ]; then
+function setup_oh_my_zsh_theme() {
+	if ! directory_exists "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"; then
 		git clone https://github.com/bhilburn/powerlevel9k.git "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"
 	fi
+}
 
-	# Setup SSH
-	if ! [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
-		ssh-keygen -t ed25519 -C "$EMAIL"
+function source_zsh() {
+	zsh
+	
+	if file_exists "$HOME/.zshrc"; then
+		# The shellcheck error code SC1091 needs disabled here.
+		# This is because the sourced file may not exist on the system when shellcheck is ran.
+		# That means that shellcheck believes we are doing something wrong by sourcing a non-existant file.
+		# As `zsh` creates a default rc file and we copy in our custom one on top of that, we know it will be there.
+		# In turn, we can safely ignore this specific error in this specific use-case.
+		# shellcheck disable=SC1091
+		source "$HOME/.zshrc"
+	else
+		echo "Something went wrong. I cannot find the '.zshrc' file but it should be here: '$HOME/.zshrc'"
+	fi
+}
+
+function setup_brew() {
+	if ! command_exists brew; then
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	fi
+	
+	brew update
+	brew tap homebrew/cask-fonts
+}
+
+function setup_choco() {
+	if ! command_exists choco; then
+		powershell "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
 	fi
 
+	# Allow default -y flag to be set for installs and upgrades
+	choco feature enable -n allowGlobalConfirmation
+}
+
+function brew_install_cask() {
+	brew list --cask "$1" &>/dev/null || brew install --cask "$1"
+}
+
+function brew_install_formula() {
+	brew list "$1" &>/dev/null || brew install "$1"
+}
+
+function choco_install() {
+	choco install "$1"
+}
+
+function setup_mac() {
+	if ! xcode-select -p 1>/dev/null; then
+		xcode-select --install
+	fi
+
+	setup_brew
+
+	brew_install_cask font-fira-code
+	brew_install_cask iterm2
+	brew_install_cask visual-studio-code
+	brew_install_cask docker
+
+	brew_install_formula git
+	brew_install_formula zsh
+	brew_install_formula gpg
+	brew_install_formula shellcheck
+	
+	# Configure installed applications
+	install_vs_code_extensions
+	configure_git
+	configure_zsh_permissions
+
+	# Move vs-code settings
+	cp -r ./vscode/. "$HOME/Library/Application Support/Code/User"
+
+	# Copy over ZSH settings
+	cp ./zsh/.zshrc "$HOME/.zshrc"
+
+	setup_oh_my_zsh
+	setup_oh_my_zsh_theme
+	generate_ssh_keys
+
 	if ! [ "$(pgrep -f "[s]sh-agent" | wc -l)" -gt 0 ]; then
-		eval "$(ssh-agent -s)"
+		ssh-agent -s
 		if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
-			ssh-add -K "$HOME/.ssh/id_ed25519"
+			# The -K option is OSX specific.
+			# It adds the private key password into the OSX keychain.
+			# This allows your normal login info to unlock it for use with SSH.
+			ssh-add -K "$SSH_FILE_LOCATION"
 		fi
 		ssh-agent -k
 	fi
 
-	cp ./ssh/config "$HOME/.ssh/config"
-
-	# Generate GPG key if one isn't already in existence
-	if [[ "$(gpg --list-secret-keys --keyid-format LONG)" != *"sec"* ]]; then
-		gpg --full-generate-key
-	fi
+	apply_global_ssh_configuration
+	generate_gpg_key
 
 	# Move iterm settings
 	cp ./iterm/com.googlecode.iterm2.plist "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
 
-	# Final manual steps
-	echo "Run: 'gpg --list-secret-keys --keyid-format LONG' to get the signature id."
-	echo "Run: 'gpg --armor --export {id}' and add to github."
-	echo "Run: 'git config --global user.signingkey {id}' to auto-sign commits."
-	echo "Run: 'pbcopy < $HOME/.ssh/id_ed25519.pub' to copy the ssh config to the clipboard and then add it to github."
-	echo "Run: 'ssh -T git@github.com' to verify the ssh connection runs properly."
-
-	# Source zsh
-	zsh
-	source "$HOME/.zshrc"
+	source_zsh
+	final_manual_steps_information
 }
 
-case "${OSTYPE}" in
-solaris*) echo "SOLARIS" ;;
-darwin*) setup_mac ;;
-linux*) echo "LINUX" ;;
-bsd*) echo "BSD" ;;
-msys*) echo "WINDOWS" ;;
-*) echo "Unknown OS: ${OSTYPE}" ;;
-esac
+function setup_windows() {
+	setup_choco
+	
+	# Install everything needed via choco
+	choco_install firacode
+	choco_install microsoft-windows-terminal
+	choco_install vscode
+	choco_install docker-desktop
+	choco_install git
+	choco_install gnupg
+	choco_install shellcheck
+	choco_install ntop.portable # htop for windows
+
+	# Move vs-code settings
+	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"
+
+	# Configure installed applications
+	install_vs_code_extensions
+	configure_git
+	generate_ssh_keys
+
+	if ! [ "$(ps | findstr "[s]sh-agent" | Measure-Object -line | Select-Object -expand Lines)" -gt 0 ]; then
+		# Set the ssh-agent to be non-disabled by default and require manual starts
+		Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+
+		ssh-agent -s
+
+		if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
+			ssh-add "$SSH_FILE_LOCATION"
+		fi
+
+		ssh-agent -k
+	fi
+
+	apply_global_ssh_configuration
+	generate_gpg_key
+	final_manual_steps_information
+}
