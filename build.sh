@@ -6,12 +6,12 @@ EMAIL="47126579+jamesrweb@users.noreply.github.com"
 SSH_FILE_LOCATION="$HOME/.ssh/id_ed25519"
 
 case "$OSTYPE" in
-	solaris*) echo "SOLARIS" ;;
-	darwin*) setup_mac ;;
-	linux*) echo "LINUX" ;;
-	bsd*) echo "BSD" ;;
-	msys*) setup_windows ;;
-	*) echo "Unknown OS: $OSTYPE" ;;
+solaris*) echo "SOLARIS" ;;
+darwin*) setup_mac ;;
+linux*) echo "LINUX" ;;
+bsd*) echo "BSD" ;;
+msys*) setup_windows ;;
+*) echo "Unknown OS: $OSTYPE" ;;
 esac
 
 function command_exists() {
@@ -26,7 +26,7 @@ function file_exists() {
 	if test -f "$1"; then
 		return 0
 	fi
-	
+
 	return 1
 }
 
@@ -34,7 +34,7 @@ function directory_exists() {
 	if test -d "$1"; then
 		return 0
 	fi
-	
+
 	return 1
 }
 
@@ -107,7 +107,7 @@ function setup_oh_my_zsh_theme() {
 
 function source_zsh() {
 	zsh
-	
+
 	if file_exists "$HOME/.zshrc"; then
 		# The shellcheck error code SC1091 needs disabled here.
 		# This is because the sourced file may not exist on the system when shellcheck is ran.
@@ -125,7 +125,7 @@ function setup_brew() {
 	if ! command_exists brew; then
 		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	fi
-	
+
 	brew update
 	brew tap homebrew/cask-fonts
 }
@@ -167,7 +167,7 @@ function setup_mac() {
 	brew_install_formula zsh
 	brew_install_formula gpg
 	brew_install_formula shellcheck
-	
+
 	# Configure installed applications
 	install_vs_code_extensions
 	configure_git
@@ -206,7 +206,7 @@ function setup_mac() {
 
 function setup_windows() {
 	setup_choco
-	
+
 	# Install everything needed via choco
 	choco_install firacode
 	choco_install microsoft-windows-terminal
