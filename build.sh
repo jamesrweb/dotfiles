@@ -170,6 +170,7 @@ function setup_mac() {
 	brew_install_formula elm
 	brew_install_formula nodejs
 	brew_install_formula python3
+	brew_install_formula dotnet
 	brew_install_formula php
 	brew_install_formula composer
 	brew_install_formula steam
@@ -226,6 +227,8 @@ function setup_windows() {
 	choco_install elm-platform
 	choco_install nodejs
 	choco_install python3
+	choco_install dotnet
+	choco_install dotnetcore
 	choco_install php
 	choco_install composer
 	choco_install steam
