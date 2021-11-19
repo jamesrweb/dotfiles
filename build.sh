@@ -162,6 +162,7 @@ function setup_mac() {
 	brew_install_cask iterm2
 	brew_install_cask vscode
 	brew_install_cask docker
+	brew_install_cask postman
 
 	brew_install_formula git
 	brew_install_formula zsh
@@ -232,6 +233,7 @@ function setup_windows() {
 	choco_install composer
 	choco_install steam
 	choco_install vscode
+	choco_install postman
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"
