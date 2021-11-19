@@ -227,8 +227,7 @@ function setup_windows() {
 	choco_install elm-platform
 	choco_install nodejs
 	choco_install python3
-	choco_install dotnet
-	choco_install dotnetcore
+	choco_install dotnet-sdk
 	choco_install php
 	choco_install composer
 	choco_install steam
