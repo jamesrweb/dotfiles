@@ -163,6 +163,9 @@ function setup_mac() {
 	brew_install_cask vscode
 	brew_install_cask docker
 	brew_install_cask postman
+	brew_install_cask spotify
+	brew_install_cask powershell
+	brew_install_cask steam
 
 	brew_install_formula git
 	brew_install_formula zsh
@@ -174,7 +177,6 @@ function setup_mac() {
 	brew_install_formula dotnet
 	brew_install_formula php
 	brew_install_formula composer
-	brew_install_formula steam
 	brew_install_formula vscode
 
 	# Configure installed applications
@@ -234,6 +236,8 @@ function setup_windows() {
 	choco_install steam
 	choco_install vscode
 	choco_install postman
+	choco_install spotify
+	choco_install powershell-core
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"
