@@ -101,7 +101,7 @@ function setup_oh_my_zsh() {
 
 function setup_oh_my_zsh_theme() {
 	brew_install_formula romkatv/powerlevel10k/powerlevel10k
-	echo "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >> ~/.zshrc
+	echo -e "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >> ~/.zshrc
 }
 
 function source_zsh() {
