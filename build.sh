@@ -100,9 +100,8 @@ function setup_oh_my_zsh() {
 }
 
 function setup_oh_my_zsh_theme() {
-	if ! directory_exists "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"; then
-		git clone https://github.com/bhilburn/powerlevel9k.git "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"
-	fi
+	brew_install_formula romkatv/powerlevel10k/powerlevel10k
+	echo "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >> ~/.zshrc
 }
 
 function source_zsh() {
