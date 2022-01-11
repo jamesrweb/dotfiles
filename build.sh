@@ -191,6 +191,11 @@ function setup_mac() {
 
 	setup_oh_my_zsh
 	setup_oh_my_zsh_theme
+
+	# Install zsh plugins
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+	
 	generate_ssh_keys
 
 	if ! [ "$(pgrep -f "[s]sh-agent" | wc -l)" -gt 0 ]; then
