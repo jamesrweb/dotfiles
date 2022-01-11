@@ -6,14 +6,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Exports
-export ZSH="/Users/$USER/.oh-my-zsh"
-export ZSH_THEME="powerlevel10k/powerlevel10k"
-export GPG_TTY=$(tty)
+export PATH="/usr/local/sbin:$PATH"
+export GPG_TTY=$TTY
 export LANG=de_DE.UTF-8
+export ZSH="/Users/$USER/.oh-my-zsh"
 export NVM_DIR="$HOME/.nvm"
   [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && . "$(brew --prefix)/opt/nvm/nvm.sh"
   [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
-export PATH="/usr/local/sbin:$PATH"
 
 # Aliases
 alias shfmt="docker run --rm -v $PWD:/work tmknom/shfmt -w -s $1"
@@ -23,7 +22,7 @@ alias kds="lsof -ti :8000 | xargs kill -9"
 HEROKU_AC_ZSH_SETUP_PATH=/Users/jamesrobb/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;
 
 # Config
-plugins=(git docker docker-compose composer)
+plugins=(git docker docker-compose composer zsh-syntax-highlighting zsh-autosuggestions)
 
 source "$ZSH/oh-my-zsh.sh"
 
