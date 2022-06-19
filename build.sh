@@ -39,20 +39,20 @@ function directory_exists() {
 }
 
 function configure_git() {
+	git config --global alias.count-lines "! git log --author=\"\$1\" --pretty=tformat: --numstat | awk '{ add += \$1; subs += \$2; loc += \$1 - \$2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\n\", add, subs, loc }' #"
+	git config --global alias.history 'log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
 	git config --global commit.gpgsign true
-	git config --global init.defaultBranch master
-	git config --global user.name "James Robb"
-	git config --global user.email "$EMAIL"
-	git config --global pull.rebase true
-	git config --global push.default current
-	git config --global fetch.prune true
-	git config --global rebase.autosquash true
-	git config --global core.ignorecase false
 	git config --global core.editor 'code --wait'
+	git config --global core.ignorecase false
 	git config --global diff.tool 'code'
 	git config --global difftool.code.cmd "code --wait --diff $LOCAL $REMOTE"
-	git config --global alias.history 'log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
-	git config --global alias.count-lines "! git log --author=\"\$1\" --pretty=tformat: --numstat | awk '{ add += \$1; subs += \$2; loc += \$1 - \$2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\n\", add, subs, loc }' #"
+	git config --global fetch.prune true
+	git config --global init.defaultBranch master
+	git config --global pull.rebase true
+	git config --global push.default current
+	git config --global rebase.autosquash true
+	git config --global user.email "$EMAIL"
+	git config --global user.name "James Robb"
 }
 
 function install_vs_code_extensions() {
@@ -102,7 +102,7 @@ function setup_oh_my_zsh() {
 
 function setup_oh_my_zsh_theme() {
 	brew_install_formula romkatv/powerlevel10k/powerlevel10k
-	echo -e "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >> ~/.zshrc
+	echo -e "source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
 }
 
 function source_zsh() {
@@ -158,26 +158,27 @@ function setup_mac() {
 
 	setup_brew
 
+	brew_install_cask docker
 	brew_install_cask font-fira-code
 	brew_install_cask iterm2
-	brew_install_cask vscode
-	brew_install_cask docker
 	brew_install_cask postman
-	brew_install_cask spotify
 	brew_install_cask powershell
+	brew_install_cask spotify
 	brew_install_cask steam
+	brew_install_cask vscode
 
-	brew_install_formula git
-	brew_install_formula zsh
-	brew_install_formula gpg
-	brew_install_formula shellcheck
-	brew_install_formula elm
-	brew_install_formula nodejs
-	brew_install_formula python3
-	brew_install_formula dotnet
-	brew_install_formula php
 	brew_install_formula composer
+	brew_install_formula dotnet
+	brew_install_formula elm
+	brew_install_formula git
+	brew_install_formula gpg
+	brew_install_formula nodejs
+	brew_install_formula php
+	brew_install_formula python3
+	brew_install_formula shellcheck
+	brew_install_formula shfmt
 	brew_install_formula vscode
+	brew_install_formula zsh
 
 	# Configure installed applications
 	install_vs_code_extensions
@@ -194,9 +195,9 @@ function setup_mac() {
 	setup_oh_my_zsh_theme
 
 	# Install zsh plugins
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-	
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+
 	generate_ssh_keys
 
 	if ! [ "$(pgrep -f "[s]sh-agent" | wc -l)" -gt 0 ]; then
@@ -224,25 +225,24 @@ function setup_windows() {
 	setup_choco
 
 	# Install everything needed via choco
-	choco_install firacode
-	choco_install microsoft-windows-terminal
-	choco_install vscode
+	choco_install composer
 	choco_install docker-desktop
+	choco_install dotnet-sdk
+	choco_install elm-platform
+	choco_install firacode
 	choco_install git
 	choco_install gnupg
-	choco_install shellcheck
-	choco_install ntop.portable # htop for windows
-	choco_install elm-platform
+	choco_install microsoft-windows-terminal
 	choco_install nodejs
-	choco_install python3
-	choco_install dotnet-sdk
+	choco_install ntop.portable # htop for windows
 	choco_install php
-	choco_install composer
+	choco_install postman
+	choco_install powershell-core
+	choco_install python3
+	choco_install shellcheck
+	choco_install spotify
 	choco_install steam
 	choco_install vscode
-	choco_install postman
-	choco_install spotify
-	choco_install powershell-core
 
 	# Move vs-code settings
 	cp -r ./vscode/. "$HOME/AppData/Roaming/Code/User"

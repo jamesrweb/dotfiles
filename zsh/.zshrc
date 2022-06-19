@@ -15,7 +15,6 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
 
 # Aliases
-alias shfmt="docker run --rm -v $PWD:/work tmknom/shfmt -w -s $1"
 alias kds="lsof -ti :8000 | xargs kill -9"
 
 # heroku autocomplete setup
