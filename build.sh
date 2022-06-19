@@ -52,6 +52,7 @@ function configure_git() {
 	git config --global diff.tool 'code'
 	git config --global difftool.code.cmd "code --wait --diff $LOCAL $REMOTE"
 	git config --global alias.history 'log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
+	git config --global alias.count-lines "! git log --author=\"\$1\" --pretty=tformat: --numstat | awk '{ add += \$1; subs += \$2; loc += \$1 - \$2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\n\", add, subs, loc }' #"
 }
 
 function install_vs_code_extensions() {
