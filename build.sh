@@ -53,6 +53,7 @@ function configure_git() {
 	git config --global rebase.autosquash true
 	git config --global user.email "$EMAIL"
 	git config --global user.name "James Robb"
+        git config --global --add --bool push.autoSetupRemote true
 }
 
 function install_vs_code_extensions() {
