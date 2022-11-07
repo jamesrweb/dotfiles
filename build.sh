@@ -168,6 +168,7 @@ function setup_mac() {
 	brew_install_cask steam
 	brew_install_cask vscode
 
+	brew_install_formula alfred
 	brew_install_formula composer
 	brew_install_formula dotnet
 	brew_install_formula elm
