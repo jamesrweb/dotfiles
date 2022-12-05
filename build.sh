@@ -160,8 +160,10 @@ function setup_mac() {
 	setup_brew
 
 	brew_install_cask docker
+	brew_install_cask dotnet-sdk
 	brew_install_cask font-fira-code
 	brew_install_cask iterm2
+	brew_install_cask jetbrains-toolbox
 	brew_install_cask postman
 	brew_install_cask powershell
 	brew_install_cask spotify
@@ -170,7 +172,6 @@ function setup_mac() {
 
 	brew_install_formula alfred
 	brew_install_formula composer
-	brew_install_formula dotnet
 	brew_install_formula elm
 	brew_install_formula git
 	brew_install_formula gpg
